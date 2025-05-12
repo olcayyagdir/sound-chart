@@ -1,0 +1,93 @@
+/* Genel grid yapısı */
+.filterGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 sütun */
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+}
+
+/* Her filtre kutusu */
+.filterItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.filterLabel {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.select,
+.input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Reset butonu */
+.resetButton {
+  grid-column: span 2;
+  justify-self: start;
+  padding: 6px 12px;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.resetButton:hover {
+  background-color: #dc2626;
+}
+
+/* Autocomplete listesi */
+.suggestionList {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  z-index: 999;
+  max-height: 150px;
+  overflow-y: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border-radius: 0 0 4px 4px;
+}
+
+.suggestionItem {
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.suggestionItem:hover {
+  background-color: #f3f4f6;
+}
+.autocompleteWrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Mobil uyum */
+@media (max-width: 768px) {
+  .filterGrid {
+    grid-template-columns: 1fr; /* Tek sütun */
+  }
+
+  .resetButton {
+    grid-column: span 1;
+  }
+}
