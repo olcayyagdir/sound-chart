@@ -29,8 +29,8 @@ const FilterPanel = ({
   showAlbumSuggestions,
   setShowAlbumSuggestions,
 
-  durationOptions,
-  revenueOptions,
+  durationLimits,
+  revenueLimits,
 
   // Reset
   onReset,
@@ -65,8 +65,8 @@ const FilterPanel = ({
           >
             <option value="">-- Select Media --</option>
             {mediaTypeOptions.map((m, i) => (
-              <option key={i} value={m}>
-                {m}
+              <option key={i} value={m.name}>
+                {m.name}
               </option>
             ))}
           </select>
@@ -75,35 +75,57 @@ const FilterPanel = ({
         {/* Duration */}
         <div className={styles.filterItem}>
           <label className={styles.filterLabel}>Duration</label>
-          <select
-            value={durationRange}
-            onChange={(e) => setDurationRange(e.target.value)}
-            className={styles.select}
-          >
-            <option value="">-- Select Duration --</option>
-            {durationOptions.map((d, i) => (
-              <option key={i} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
+          <div>
+            <input
+              type="range"
+              min={durationLimits.min}
+              max={durationLimits.max}
+              value={durationRange[0]}
+              onChange={(e) =>
+                setDurationRange([+e.target.value, durationRange[1]])
+              }
+            />
+            <input
+              type="range"
+              min={durationLimits.min}
+              max={durationLimits.max}
+              value={durationRange[1]}
+              onChange={(e) =>
+                setDurationRange([durationRange[0], +e.target.value])
+              }
+            />
+            <div className={styles.rangeLabel}>
+              {durationRange[0]} - {durationRange[1]}
+            </div>
+          </div>
         </div>
 
         {/* Revenue Range */}
         <div className={styles.filterItem}>
-          <label className={styles.filterLabel}>Revenue Range</label>
-          <select
-            value={revenueRange}
-            onChange={(e) => setRevenueRange(e.target.value)}
-            className={styles.select}
-          >
-            <option value="">-- Select Revenue --</option>
-            {revenueOptions.map((r, i) => (
-              <option key={i} value={r}>
-                {r}
-              </option>
-            ))}
-          </select>
+          <label className={styles.filterLabel}>Revenue</label>
+          <div>
+            <input
+              type="range"
+              min={revenueLimits.min}
+              max={revenueLimits.max}
+              value={revenueRange[0]}
+              onChange={(e) =>
+                setRevenueRange([+e.target.value, revenueRange[1]])
+              }
+            />
+            <input
+              type="range"
+              min={revenueLimits.min}
+              max={revenueLimits.max}
+              value={revenueRange[1]}
+              onChange={(e) =>
+                setRevenueRange([revenueRange[0], +e.target.value])
+              }
+            />
+            <div className={styles.rangeLabel}>
+              {revenueRange[0]} - {revenueRange[1]}
+            </div>
+          </div>
         </div>
 
         {/* Artist (autocomplete) */}
@@ -127,16 +149,16 @@ const FilterPanel = ({
           />
           {showArtistSuggestions && artistSuggestions.length > 0 && artist && (
             <ul className={styles.suggestionList}>
-              {artistSuggestions.map((name, index) => (
+              {artistSuggestions.map((artist, index) => (
                 <li
                   key={index}
                   className={styles.suggestionItem}
                   onMouseDown={() => {
-                    setArtist(name);
+                    setArtist(artist.name);
                     setShowArtistSuggestions(false);
                   }}
                 >
-                  {name}
+                  {artist.name}
                 </li>
               ))}
             </ul>
@@ -169,17 +191,19 @@ const FilterPanel = ({
           {showAlbumSuggestions && filteredAlbums.length > 0 && album && (
             <ul className={styles.suggestionList}>
               {filteredAlbums
-                .filter((a) => a.toLowerCase().includes(album.toLowerCase()))
+                .filter((a) =>
+                  a.title.toLowerCase().includes(album.toLowerCase())
+                )
                 .map((a, index) => (
                   <li
                     key={index}
                     className={styles.suggestionItem}
                     onMouseDown={() => {
-                      setAlbum(a);
+                      setAlbum(a.title);
                       setShowAlbumSuggestions(false);
                     }}
                   >
-                    {a}
+                    {a.title}
                   </li>
                 ))}
             </ul>
@@ -199,8 +223,8 @@ const FilterPanel = ({
             >
               <option value="">-- Select Album --</option>
               {filteredAlbums.map((a, index) => (
-                <option key={index} value={a}>
-                  {a}
+                <option key={index} value={a.title}>
+                  {a.title}
                 </option>
               ))}
             </select>

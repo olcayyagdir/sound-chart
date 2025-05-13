@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import * as topojson from "topojson-client";
 
-const WorldMap = ({ data, selectedFilters }) => {
+const WorldMap = ({ data }) => {
   const svgRef = useRef();
   const [tooltip, setTooltip] = useState({
     visible: false,
@@ -23,20 +23,16 @@ const WorldMap = ({ data, selectedFilters }) => {
       .geoMercator()
       .scale(140)
       .translate([width / 2, height / 1.4]);
+
     const path = d3.geoPath().projection(projection);
 
-    // Varsayılan colorScale
-    const colorScale = d3.scaleSequential(d3.interpolateBlues).domain([0, 100]);
+    // Harcama miktarları için color scale
+    const spentValues = data.map((d) => d.totalSpent);
+    const colorScale = d3
+      .scaleSequential(d3.interpolateYlGnBu)
+      .domain([Math.min(...spentValues), Math.max(...spentValues)]);
 
-    // Eğer veri varsa dinamik domain kullan
-    if (data && data.length > 0) {
-      const listenRates = data.map((d) => d.listen_rate);
-      const minRate = Math.min(...listenRates);
-      const maxRate = Math.max(...listenRates);
-      colorScale.domain([minRate, maxRate]);
-    }
-
-    // Dünya haritası verisini çek
+    // GeoJSON verisini yükle
     d3.json(
       "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json"
     ).then((worldData) => {
@@ -53,48 +49,37 @@ const WorldMap = ({ data, selectedFilters }) => {
         .join("path")
         .attr("d", path)
         .attr("fill", (d) => {
-          if (!data || data.length === 0) return "#eee";
-          const countryData = data.find((c) => c.country_code === +d.id); // string->number
-          return countryData ? colorScale(countryData.listen_rate) : "#eee";
+          const countryData = data.find((c) => c.countryIsoCode === +d.id);
+          return countryData ? colorScale(countryData.totalSpent) : "#eee";
         })
         .attr("stroke", "#999")
         .on("mouseover", (event, d) => {
-          const countryData = data.find((c) => c.country_code === +d.id);
+          const countryData = data.find((c) => c.countryIsoCode === +d.id);
           if (countryData && svgRef.current) {
             const svgRect = svgRef.current.getBoundingClientRect();
-            const infoItems = [
-              `${countryData.country_name} – %${countryData.listen_rate}`, // her zaman göster
-              selectedFilters.genre && countryData.genre,
-              selectedFilters.mediaType && countryData.media_type,
-              selectedFilters.durationRange && countryData.duration_range,
-              selectedFilters.composer && countryData.composer,
-              selectedFilters.revenueRange && `$${countryData.unit_price}`,
-            ].filter(Boolean);
-
             setTooltip({
               visible: true,
               x: event.clientX - svgRect.left,
               y: event.clientY - svgRect.top - 40,
-              content: infoItems.join(" – "),
+              content: `${
+                countryData.country
+              } – $${countryData.totalSpent.toFixed(2)}`,
             });
           }
         })
         .on("mousemove", (event) => {
-          if (svgRef.current) {
-            const svgRect = svgRef.current.getBoundingClientRect();
-            setTooltip((prev) => ({
-              ...prev,
-              x: event.clientX - svgRect.left,
-              y: event.clientY - svgRect.top - 40,
-            }));
-          }
+          const svgRect = svgRef.current.getBoundingClientRect();
+          setTooltip((prev) => ({
+            ...prev,
+            x: event.clientX - svgRect.left,
+            y: event.clientY - svgRect.top - 40,
+          }));
         })
-
         .on("mouseout", () => {
           setTooltip((prev) => ({ ...prev, visible: false }));
         });
     });
-  }, [data, selectedFilters]);
+  }, [data]);
 
   return (
     <div style={{ position: "relative" }}>

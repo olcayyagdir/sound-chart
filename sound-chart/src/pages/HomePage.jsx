@@ -3,20 +3,20 @@ import styles from "./HomePage.module.css";
 import WorldMap from "../components/WorldMap";
 import Header from "../components/header";
 import FilterPanel from "../components/FilterPanel";
-import Graph from "../components/Graph";
+import GenreStackedChart from "../components/GenreStackedChart";
 import axios from "axios";
 
 const HomePage = () => {
   // Filtre state'leri
   const [genre, setGenre] = useState("");
   const [mediaType, setMediaType] = useState("");
-  const [durationRange, setDurationRange] = useState("");
-  const [revenueRange, setRevenueRange] = useState("");
+  const [durationRange, setDurationRange] = useState([0, 0]);
+  const [revenueRange, setRevenueRange] = useState([0, 0]);
+  const [durationLimits, setDurationLimits] = useState({ min: 0, max: 0 });
+  const [revenueLimits, setRevenueLimits] = useState({ min: 0, max: 0 });
 
   const [genreOptions, setGenreOptions] = useState([]);
   const [mediaTypeOptions, setMediaTypeOptions] = useState([]);
-  const [durationOptions, setDurationOptions] = useState([]);
-  const [revenueOptions, setRevenueOptions] = useState([]);
 
   const [artist, setArtist] = useState("");
   const [artistSuggestions, setArtistSuggestions] = useState([]);
@@ -46,8 +46,8 @@ const HomePage = () => {
     const fetchInitialOptions = async () => {
       try {
         const [genreRes, mediaRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/genres"),
-          axios.get("http://localhost:5000/api/mediaTypes"),
+          axios.get("https://localhost:7020/api/genres"),
+          axios.get("https://localhost:7020/api/mediaTypes"),
         ]);
         setGenreOptions(genreRes.data);
         setMediaTypeOptions(mediaRes.data);
@@ -58,22 +58,27 @@ const HomePage = () => {
 
     fetchInitialOptions();
   }, []);
-
+  //duration ve totalspent min maxlı yap
   useEffect(() => {
-    const fetchExtraOptions = async () => {
+    const fetchLimits = async () => {
       try {
         const [durationRes, revenueRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/durations"),
-          axios.get("http://localhost:5000/api/revenueRanges"),
+          axios.get("https://localhost:7020/api/durations"),
+          axios.get("https://localhost:7020/api/revenueRanges"),
         ]);
-        setDurationOptions(durationRes.data);
-        setRevenueOptions(revenueRes.data);
+
+        // Backend response example: { min: 30, max: 400 }
+        setDurationLimits(durationRes.data);
+        setDurationRange([durationRes.data.min, durationRes.data.max]);
+
+        setRevenueLimits(revenueRes.data);
+        setRevenueRange([revenueRes.data.min, revenueRes.data.max]);
       } catch (err) {
-        console.error("Ek filtre verileri alınamadı:", err);
+        console.error("Min/max verileri alınamadı:", err);
       }
     };
 
-    fetchExtraOptions();
+    fetchLimits();
   }, []);
 
   // Artist input'a yazıldıkça backend'den öneri getir
@@ -85,7 +90,7 @@ const HomePage = () => {
       }
 
       try {
-        const res = await axios.get("http://localhost:5000/api/artists", {
+        const res = await axios.get("https://localhost:7020/api/artists", {
           params: { search: artist },
         });
         setArtistSuggestions(res.data);
@@ -106,7 +111,7 @@ const HomePage = () => {
       }
 
       try {
-        const res = await axios.get("http://localhost:5000/api/albums", {
+        const res = await axios.get("https://localhost:7020/api/albums", {
           params: { artist },
         });
         setFilteredAlbums(res.data);
@@ -125,14 +130,17 @@ const HomePage = () => {
         const params = {};
         if (genre) params.genre = genre;
         if (mediaType) params.mediaType = mediaType;
-        if (durationRange) params.durationRange = durationRange;
-        if (revenueRange) params.price_range = revenueRange;
+        if (durationRange) params.durationRange = durationRange; //değiştir min max
+        if (revenueRange) params.totalSpent = revenueRange;
         if (artist) params.artist = artist;
         if (album) params.album = album;
 
-        const response = await axios.get("http://localhost:5000/api/mapData", {
-          params,
-        });
+        const response = await axios.get(
+          "https://localhost:7020/api/tracks/worldMap",
+          {
+            params,
+          }
+        );
 
         setMapData(response.data);
       } catch (error) {
@@ -191,8 +199,8 @@ const HomePage = () => {
           setDurationRange={setDurationRange}
           revenueRange={revenueRange}
           setRevenueRange={setRevenueRange}
-          durationOptions={durationOptions}
-          revenueOptions={revenueOptions}
+          durationLimits={durationLimits}
+          revenueLimits={revenueLimits}
           artist={artist}
           setArtist={setArtist}
           artistSuggestions={artistSuggestions}
@@ -244,8 +252,8 @@ const HomePage = () => {
         Show Graphs
       </button>
       <section id="graph" className={styles.chartSection}>
-        <h3>Genre Distribution</h3>
-        <Graph data={mapData} />
+        <h3>Genre Distribution by Country</h3>
+        <GenreStackedChart />
       </section>
 
       {/* 📊 PREDICTION PLACEHOLDER */}
