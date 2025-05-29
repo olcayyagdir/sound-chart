@@ -4,7 +4,12 @@ import WorldMap from "../components/WorldMap";
 import Header from "../components/header";
 import FilterPanel from "../components/FilterPanel";
 import GenreStackedChart from "../components/GenreStackedChart";
+import EmployeePieChart from "../components/EmployeePieChart";
+import WordCloud from "../components/WorldCloud";
+import BubbleChart from "../components/BubbleChart";
+import chartStyles from "../components/ChartSection.module.css";
 import axios from "axios";
+import SectionWrapper from "../components/SectionWrapper";
 
 const HomePage = () => {
   // Filtre state'leri
@@ -46,8 +51,12 @@ const HomePage = () => {
     const fetchInitialOptions = async () => {
       try {
         const [genreRes, mediaRes] = await Promise.all([
-          axios.get("https://localhost:7020/api/genres"),
-          axios.get("https://localhost:7020/api/mediaTypes"),
+          axios.get(
+            "https://soundchartbackend-gmcqc3bgfscyaced.westeurope-01.azurewebsites.net/api/genres"
+          ),
+          axios.get(
+            "https://soundchartbackend-gmcqc3bgfscyaced.westeurope-01.azurewebsites.net/api/mediaTypes"
+          ),
         ]);
         setGenreOptions(genreRes.data);
         setMediaTypeOptions(mediaRes.data);
@@ -63,8 +72,12 @@ const HomePage = () => {
     const fetchLimits = async () => {
       try {
         const [durationRes, revenueRes] = await Promise.all([
-          axios.get("https://localhost:7020/api/durations"),
-          axios.get("https://localhost:7020/api/revenueRanges"),
+          axios.get(
+            "https://soundchartbackend-gmcqc3bgfscyaced.westeurope-01.azurewebsites.net/api/durations"
+          ),
+          axios.get(
+            "https://soundchartbackend-gmcqc3bgfscyaced.westeurope-01.azurewebsites.net/api/revenueRanges"
+          ),
         ]);
 
         // Backend response example: { min: 30, max: 400 }
@@ -90,9 +103,12 @@ const HomePage = () => {
       }
 
       try {
-        const res = await axios.get("https://localhost:7020/api/artists", {
-          params: { search: artist },
-        });
+        const res = await axios.get(
+          "https://soundchartbackend-gmcqc3bgfscyaced.westeurope-01.azurewebsites.net/api/artists",
+          {
+            params: { search: artist },
+          }
+        );
         setArtistSuggestions(res.data);
       } catch (err) {
         console.error("Sanatçılar alınamadı:", err);
@@ -111,9 +127,12 @@ const HomePage = () => {
       }
 
       try {
-        const res = await axios.get("https://localhost:7020/api/albums", {
-          params: { artist },
-        });
+        const res = await axios.get(
+          "https://soundchartbackend-gmcqc3bgfscyaced.westeurope-01.azurewebsites.net/api/albums",
+          {
+            params: { artist },
+          }
+        );
         setFilteredAlbums(res.data);
       } catch (err) {
         console.error("Albüm verisi alınamadı:", err);
@@ -136,7 +155,7 @@ const HomePage = () => {
         if (album) params.album = album;
 
         const response = await axios.get(
-          "https://localhost:7020/api/tracks/worldMap",
+          "https://soundchartbackend-gmcqc3bgfscyaced.westeurope-01.azurewebsites.net/api/tracks/worldMap",
           {
             params,
           }
@@ -152,13 +171,12 @@ const HomePage = () => {
   }, [genre, mediaType, durationRange, revenueRange, artist, album]);
 
   return (
-    <>
+    <div>
       <Header />
-
-      {/* 📘 ABOUT SECTION */}
-      <section id="about" className={styles.aboutSection}>
+      {/*  ABOUT SECTION */}
+      <SectionWrapper id="about" className={styles.aboutSection}>
         <div className={styles.card}>
-          <h2 className={styles.cardTitle}>About Us</h2>
+          <h3 className={styles.cardTitle}>Platform Mission</h3>
           <div className={styles.cardContent}>
             <p>
               Welcome to <strong>Sound Chart</strong> – a platform dedicated to
@@ -172,7 +190,7 @@ const HomePage = () => {
         </div>
 
         <div className={styles.card}>
-          <h2 className={styles.cardTitle}>How We Collect Data</h2>
+          <h3 className={styles.cardTitle}>How We Collect Data</h3>
           <div className={styles.cardContent}>
             <p>
               We gather music data from global streaming APIs, industry reports,
@@ -184,10 +202,11 @@ const HomePage = () => {
             </p>
           </div>
         </div>
-      </section>
+      </SectionWrapper>
 
       {/* 🎛️ FİLTRE PANELİ */}
-      <section id="filter">
+      <SectionWrapper id="filter">
+        <h2 className={styles.sectionHeading}>Filters</h2>
         <FilterPanel
           genre={genre}
           setGenre={setGenre}
@@ -215,11 +234,11 @@ const HomePage = () => {
           setShowAlbumSuggestions={setShowAlbumSuggestions}
           onReset={handleReset}
         />
-      </section>
+      </SectionWrapper>
 
       {/* 🌍 HARİTA */}
-      <section id="map" className={styles.mapSection}>
-        <h2 className={styles.mapTitle}>
+      <SectionWrapper id="map" className={styles.mapSection}>
+        <h2 className={styles.sectionHeading}>
           {genre ? `${genre.toUpperCase()} Listening Rates` : "Listening Rates"}
         </h2>
         <WorldMap
@@ -232,7 +251,8 @@ const HomePage = () => {
             revenueRange,
           }}
         />
-      </section>
+      </SectionWrapper>
+
       <button
         onClick={() => {
           const el = document.getElementById("chart");
@@ -251,17 +271,43 @@ const HomePage = () => {
       >
         Show Graphs
       </button>
-      <section id="graph" className={styles.chartSection}>
-        <h3>Genre Distribution by Country</h3>
+
+      <div className={styles.sectionDivider}></div>
+      <SectionWrapper id="graph" className={styles.chartSection}>
+        <h3 className={styles.sectionHeading}>Genre Distribution by Country</h3>
+
         <GenreStackedChart />
-      </section>
+      </SectionWrapper>
+
+      <div className={styles.sectionDivider}></div>
+
+      <SectionWrapper id="employee" className={styles.EmployeePieChart}>
+        <h3 className={styles.sectionHeading}>Employee Contribution Chart</h3>
+        <EmployeePieChart />
+      </SectionWrapper>
+
+      <div className={styles.sectionDivider}></div>
+
+      <SectionWrapper className={chartStyles.chartSection}>
+        <div className={chartStyles.leftCloud}>
+          <h3 className={styles.sectionHeading}>WordCloud for Artists</h3>
+
+          <WordCloud />
+        </div>
+        <div className={chartStyles.rightBubble}>
+          <h3 className={styles.sectionHeading}>Playlist-Sale Relation</h3>
+
+          <BubbleChart />
+        </div>
+      </SectionWrapper>
+      <div className={styles.sectionDivider}></div>
 
       {/* 📊 PREDICTION PLACEHOLDER */}
-      <section id="prediction" className={styles.chartSection}>
+      <SectionWrapper id="prediction" className={styles.chartSection}>
         <h3>Genre Popularity by Country (Chart Coming Soon)</h3>
         <div className={styles.placeholder}></div>
-      </section>
-    </>
+      </SectionWrapper>
+    </div>
   );
 };
 

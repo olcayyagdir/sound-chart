@@ -7,12 +7,13 @@ const GenreStackedChart = () => {
 
   useEffect(() => {
     const fetchDataAndDraw = async () => {
-      const res = await axios.get("https://localhost:7020/api/genres/Stacked");
+      const res = await axios.get(
+        "https://soundchartbackend-gmcqc3bgfscyaced.westeurope-01.azurewebsites.net/api/genres/Stacked"
+      );
       const rawData = res.data;
 
-      // Step 1: Veriyi dönüştür → [{ country: "USA", Rock: 300, Jazz: 150 }, ...]
+      // Veriyi dönüştür
       const grouped = d3.group(rawData, (d) => d.country);
-
       const transformedData = Array.from(grouped, ([country, entries]) => {
         const obj = { country };
         entries.forEach(({ genre, totalSpent }) => {
@@ -23,10 +24,10 @@ const GenreStackedChart = () => {
 
       const allGenres = Array.from(new Set(rawData.map((d) => d.genre)));
 
-      // Step 2: SVG setup
-      const width = 900;
+      // SVG ayarları
+      const width = 1100; // Genişletildi
       const height = transformedData.length * 35 + 40;
-      const margin = { top: 30, right: 20, bottom: 30, left: 100 };
+      const margin = { top: 30, right: 20, bottom: 30, left: 160 }; // Left margin artırıldı
 
       const svg = d3.select(svgRef.current);
       svg.selectAll("*").remove();
@@ -36,14 +37,13 @@ const GenreStackedChart = () => {
       const stack = d3
         .stack()
         .keys(allGenres)
-        .value((d, key) => d[key] || 0); // boş değerleri 0 yap
-
+        .value((d, key) => d[key] || 0);
       const series = stack(transformedData);
 
       const x = d3
         .scaleLinear()
         .domain([0, d3.max(series, (s) => d3.max(s, (d) => d[1]))])
-        .range([margin.left, width - margin.right]);
+        .range([margin.left, width - margin.right - 200]); // Sağda legend boşluğu bırakıldı
 
       const y = d3
         .scaleBand()
@@ -56,7 +56,7 @@ const GenreStackedChart = () => {
         .domain(allGenres)
         .range(d3.schemeTableau10);
 
-      // Draw stacked bars
+      // Barları çiz
       svg
         .append("g")
         .selectAll("g")
@@ -90,10 +90,7 @@ const GenreStackedChart = () => {
       // Legend
       const legend = svg
         .append("g")
-        .attr(
-          "transform",
-          `translate(${width - margin.right - 120},${margin.top})`
-        )
+        .attr("transform", `translate(${width - 180},${margin.top})`) // Sağ üst köşeye kaydırıldı
         .selectAll("g")
         .data(allGenres)
         .join("g")

@@ -3,53 +3,49 @@
 #about,
 #filter,
 #map,
+#graph,
+#employee,
 #prediction {
   scroll-margin-top: 80px;
+  padding-top: 80px; /* sadece #about için değil, diğerlerinde de istersen görünür içerik kaybolmasın */
 }
 
 .aboutSection {
-  margin-top: 80px;
-  background-color: #f3f4f6;
-  min-height: 100vh;
-  padding: 40px 20px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 0;
+  gap: 40px;
+  margin-top: 80px !important;
 }
 
-.card {
-  flex: 1;
-  background-color: white;
-  padding: 2rem;
-  box-sizing: border-box;
-  border-left: 1px solid #e5e7eb;
-  border-right: 1px solid #e5e7eb;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.03);
-  transition: transform 0.3s ease;
-  max-height: 320px;
-  overflow: hidden;
+.EmployeePieChart {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
 }
 
+.card {
+  flex: 1;
+  background-color: #1a1a1a;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.15);
+  transition: transform 0.3s ease;
+  color: #e5e5e5;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+}
+
 .card:hover {
   transform: translateY(-5px);
-  z-index: 1;
-}
-
-.card:nth-child(1) {
-  border-left: none;
-}
-
-.card:nth-child(2) {
-  border-right: none;
 }
 
 .cardTitle {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #1f2937;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #ffffff;
   margin-bottom: 1rem;
   text-align: center;
   position: relative;
@@ -58,67 +54,57 @@
 .cardTitle::after {
   content: "";
   display: block;
-  width: 50px;
+  width: 60px;
   height: 3px;
-  background-color: #ef4444;
+  background-color: #22c55e;
   margin: 0.5rem auto 0;
   border-radius: 2px;
 }
 
 .cardContent {
-  font-size: 1.05rem;
-  line-height: 1.7;
-  color: #4b5563;
-  overflow-y: auto;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #cccccc;
   flex-grow: 1;
 }
 
 strong {
-  color: #ef4444;
+  color: #22c55e;
+}
+.sectionTitle {
+  width: 100%;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 24px;
+  padding-left: 10px;
+  border-left: 4px solid #22c55e;
 }
 
-.filterSection {
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  text-align: center;
+.sectionHeading {
+  color: #ffffff;
+  position: relative;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: left; /* sola hizalama */
+  margin: 60px 0 24px 0; /* üstten boşluk artırıldı, alttaki boşluk korundu */
+  padding-left: 10px;
 }
 
-.filterSection h2 {
-  font-size: 1.3rem;
-  margin-bottom: 15px;
-}
-
-.filterSection select {
-  width: 80%;
-  padding: 10px;
-  font-size: 1rem;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.filterSection button {
-  margin-top: 15px;
-  padding: 10px 16px;
-  background-color: #ef4444;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.filterSection button:hover {
-  background-color: #dc2626;
+.sectionHeading::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 4px;
+  background-color: #22c55e;
+  margin-top: 0.5rem;
+  border-radius: 2px;
+  margin-left: 10px; /* sola hizalanacak şekilde */
 }
 
 .mapSection {
   padding: 2rem;
-  background-color: #ffffff;
+  background-color: #0f0f0f;
   text-align: center;
 }
 
@@ -139,6 +125,12 @@ strong {
   background-color: #e5e7eb;
   border-radius: 8px;
   margin-top: 1rem;
+}
+
+.sectionDivider {
+  border-bottom: 6px solid #222;
+  margin: 50px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 768px) {

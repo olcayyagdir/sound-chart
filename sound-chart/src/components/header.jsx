@@ -29,6 +29,9 @@ const Header = () => {
             <a href="#graph">Graph</a>
           </div>
           <div className={styles.menuItem}>
+            <a href="#employee">Employee</a>
+          </div>
+          <div className={styles.menuItem}>
             <a href="#prediction">Prediction</a>
           </div>
         </div>

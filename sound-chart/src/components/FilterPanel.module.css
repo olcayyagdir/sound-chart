@@ -6,7 +6,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #f9fafb;
+  background-color: #1f1f1f;
   border-radius: 8px;
 }
 
@@ -36,7 +36,7 @@
   grid-column: span 2;
   justify-self: start;
   padding: 6px 12px;
-  background-color: #ef4444;
+  background-color: #22c55e;
   color: white;
   border: none;
   border-radius: 4px;
@@ -47,7 +47,7 @@
 }
 
 .resetButton:hover {
-  background-color: #dc2626;
+  background-color: #16a34a;
 }
 
 /* Autocomplete listesi */
@@ -79,6 +79,60 @@
 .autocompleteWrapper {
   position: relative;
   width: 100%;
+}
+
+.rangeWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rangeSlider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: #22c55e;
+  border-radius: 5px;
+  outline: none;
+  position: relative;
+  pointer-events: all;
+}
+
+.rangeSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #22c55e;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+}
+
+.rangeSlider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #22c55e;
+  cursor: pointer;
+}
+
+.rangeInputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rangeInput {
+  width: 60px;
+  padding: 6px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 /* Mobil uyum */

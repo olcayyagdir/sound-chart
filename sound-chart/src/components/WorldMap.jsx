@@ -29,9 +29,9 @@ const WorldMap = ({ data }) => {
     // Harcama miktarları için color scale
     const spentValues = data.map((d) => d.totalSpent);
     const colorScale = d3
-      .scaleSequential(d3.interpolateYlGnBu)
-      .domain([Math.min(...spentValues), Math.max(...spentValues)]);
-
+      .scaleLinear()
+      .domain([Math.min(...spentValues), Math.max(...spentValues)])
+      .range(["#d9f99d", "#166534"]); // açık yeşil → koyu yeşil
     // GeoJSON verisini yükle
     d3.json(
       "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json"
@@ -82,7 +82,17 @@ const WorldMap = ({ data }) => {
   }, [data]);
 
   return (
-    <div style={{ position: "relative" }}>
+    <div
+      style={{
+        position: "relative",
+        backgroundColor: "#111827", // çok koyu gri
+        borderRadius: "16px",
+        padding: "20px",
+        margin: "0 auto",
+        width: "fit-content",
+        boxShadow: "0 0 20px rgba(0,0,0,0.4)", // dış parlama efekti
+      }}
+    >
       <svg ref={svgRef}></svg>
       {tooltip.visible && (
         <div
@@ -90,15 +100,16 @@ const WorldMap = ({ data }) => {
             position: "absolute",
             left: tooltip.x,
             top: tooltip.y,
-            backgroundColor: "white",
-            padding: "8px",
-            border: "1px solid #ccc",
-            borderRadius: "5px",
+            backgroundColor: "#1f1f1f", // dark background
+            color: "#e5e5e5",
+            padding: "8px 12px",
+            border: "1px solid #374151",
+            borderRadius: "6px",
             pointerEvents: "none",
             zIndex: 999,
             fontSize: "14px",
-            fontFamily: "Arial, sans-serif",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+            fontFamily: "Inter, sans-serif",
+            boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
           }}
         >
           {tooltip.content}

@@ -1,0 +1,27 @@
+.employeeChartWrapper {
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+  gap: 40px;
+}
+
+.employeeDetailPanel {
+  max-width: 320px;
+  background: #f9fafb;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: sans-serif;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.employeeDetailPanel h3 {
+  margin-top: 0;
+  font-size: 18px;
+}
+
+.employeeDetailPanel p {
+  margin: 6px 0;
+  font-size: 14px;
+  line-height: 1.4;
+}

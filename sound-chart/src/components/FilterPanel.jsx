@@ -74,8 +74,8 @@ const FilterPanel = ({
 
         {/* Duration */}
         <div className={styles.filterItem}>
-          <label className={styles.filterLabel}>Duration</label>
-          <div>
+          <label className={styles.filterLabel}>Duration (sec)</label>
+          <div className={styles.rangeWrapper}>
             <input
               type="range"
               min={durationLimits.min}
@@ -84,6 +84,7 @@ const FilterPanel = ({
               onChange={(e) =>
                 setDurationRange([+e.target.value, durationRange[1]])
               }
+              className={styles.rangeSlider}
             />
             <input
               type="range"
@@ -93,17 +94,38 @@ const FilterPanel = ({
               onChange={(e) =>
                 setDurationRange([durationRange[0], +e.target.value])
               }
+              className={styles.rangeSlider}
             />
-            <div className={styles.rangeLabel}>
-              {durationRange[0]} - {durationRange[1]}
+            <div className={styles.rangeInputs}>
+              <input
+                type="number"
+                min={durationLimits.min}
+                max={durationRange[1]}
+                value={durationRange[0]}
+                onChange={(e) =>
+                  setDurationRange([+e.target.value, durationRange[1]])
+                }
+                className={styles.rangeInput}
+              />
+              <span>–</span>
+              <input
+                type="number"
+                min={durationRange[0]}
+                max={durationLimits.max}
+                value={durationRange[1]}
+                onChange={(e) =>
+                  setDurationRange([durationRange[0], +e.target.value])
+                }
+                className={styles.rangeInput}
+              />
             </div>
           </div>
         </div>
 
-        {/* Revenue Range */}
+        {/* Revenue */}
         <div className={styles.filterItem}>
           <label className={styles.filterLabel}>Revenue</label>
-          <div>
+          <div className={styles.rangeWrapper}>
             <input
               type="range"
               min={revenueLimits.min}
@@ -112,6 +134,7 @@ const FilterPanel = ({
               onChange={(e) =>
                 setRevenueRange([+e.target.value, revenueRange[1]])
               }
+              className={styles.rangeSlider}
             />
             <input
               type="range"
@@ -121,9 +144,30 @@ const FilterPanel = ({
               onChange={(e) =>
                 setRevenueRange([revenueRange[0], +e.target.value])
               }
+              className={styles.rangeSlider}
             />
-            <div className={styles.rangeLabel}>
-              {revenueRange[0]} - {revenueRange[1]}
+            <div className={styles.rangeInputs}>
+              <input
+                type="number"
+                min={revenueLimits.min}
+                max={revenueRange[1]}
+                value={revenueRange[0]}
+                onChange={(e) =>
+                  setRevenueRange([+e.target.value, revenueRange[1]])
+                }
+                className={styles.rangeInput}
+              />
+              <span>–</span>
+              <input
+                type="number"
+                min={revenueRange[0]}
+                max={revenueLimits.max}
+                value={revenueRange[1]}
+                onChange={(e) =>
+                  setRevenueRange([revenueRange[0], +e.target.value])
+                }
+                className={styles.rangeInput}
+              />
             </div>
           </div>
         </div>
