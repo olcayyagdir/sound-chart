@@ -12,7 +12,6 @@ const GenreStackedChart = () => {
       );
       const rawData = res.data;
 
-      // Veriyi dönüştür
       const grouped = d3.group(rawData, (d) => d.country);
       const transformedData = Array.from(grouped, ([country, entries]) => {
         const obj = { country };
@@ -24,26 +23,17 @@ const GenreStackedChart = () => {
 
       const allGenres = Array.from(new Set(rawData.map((d) => d.genre)));
 
-      // SVG ayarları
-      const width = 1100; // Genişletildi
+      const width = 1100;
       const height = transformedData.length * 35 + 40;
-      const margin = { top: 30, right: 20, bottom: 30, left: 160 }; // Left margin artırıldı
-
-      const svg = d3.select(svgRef.current);
-      svg.selectAll("*").remove();
-      svg.attr("width", width).attr("height", height);
-
-      // Stack işlemi
-      const stack = d3
-        .stack()
-        .keys(allGenres)
-        .value((d, key) => d[key] || 0);
-      const series = stack(transformedData);
+      const margin = { top: 30, right: 20, bottom: 30, left: 160 };
 
       const x = d3
         .scaleLinear()
-        .domain([0, d3.max(series, (s) => d3.max(s, (d) => d[1]))])
-        .range([margin.left, width - margin.right - 200]); // Sağda legend boşluğu bırakıldı
+        .domain([
+          0,
+          d3.max(transformedData, (d) => d3.sum(allGenres, (g) => d[g] || 0)),
+        ])
+        .range([margin.left, width - margin.right - 200]);
 
       const y = d3
         .scaleBand()
@@ -56,7 +46,22 @@ const GenreStackedChart = () => {
         .domain(allGenres)
         .range(d3.schemeTableau10);
 
-      // Barları çiz
+      const stack = d3
+        .stack()
+        .keys(allGenres)
+        .value((d, key) => d[key] || 0);
+      const series = stack(transformedData);
+
+      const svg = d3
+        .select(svgRef.current)
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .style("width", "100%")
+        .style("height", "auto")
+        .style("background", "#0f0f0f");
+
+      svg.selectAll("*").remove();
+
       svg
         .append("g")
         .selectAll("g")
@@ -73,24 +78,21 @@ const GenreStackedChart = () => {
         .append("title")
         .text((d) => `${d.data.country} – ${d[1] - d[0]}`);
 
-      // X Axis
       svg
         .append("g")
         .attr("transform", `translate(0,${margin.top})`)
         .call(d3.axisTop(x).ticks(width / 100, "s"))
         .call((g) => g.selectAll(".domain").remove());
 
-      // Y Axis
       svg
         .append("g")
         .attr("transform", `translate(${margin.left},0)`)
         .call(d3.axisLeft(y))
         .call((g) => g.selectAll(".domain").remove());
 
-      // Legend
       const legend = svg
         .append("g")
-        .attr("transform", `translate(${width - 180},${margin.top})`) // Sağ üst köşeye kaydırıldı
+        .attr("transform", `translate(${width - 180},${margin.top})`)
         .selectAll("g")
         .data(allGenres)
         .join("g")
@@ -107,13 +109,18 @@ const GenreStackedChart = () => {
         .attr("x", 20)
         .attr("y", 12)
         .text((d) => d)
+        .attr("fill", "white")
         .style("font-size", "12px");
     };
 
     fetchDataAndDraw();
   }, []);
 
-  return <svg ref={svgRef}></svg>;
+  return (
+    <div style={{ width: "100%", overflowX: "auto" }}>
+      <svg ref={svgRef}></svg>
+    </div>
+  );
 };
 
 export default GenreStackedChart;

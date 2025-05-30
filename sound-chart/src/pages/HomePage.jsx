@@ -94,7 +94,7 @@ const HomePage = () => {
     fetchLimits();
   }, []);
 
-  // Artist input'a yazıldıkça backend'den öneri getir
+  // Autocomplete için sanatçı önerisi al
   useEffect(() => {
     const fetchArtists = async () => {
       if (!artist) {
@@ -105,10 +105,9 @@ const HomePage = () => {
       try {
         const res = await axios.get(
           "https://soundchartbackend-gmcqc3bgfscyaced.westeurope-01.azurewebsites.net/api/artists",
-          {
-            params: { search: artist },
-          }
+          { params: { search: artist } }
         );
+        console.log("API'den gelen sanatçılar:", res.data);
         setArtistSuggestions(res.data);
       } catch (err) {
         console.error("Sanatçılar alınamadı:", err);
@@ -118,7 +117,7 @@ const HomePage = () => {
     fetchArtists();
   }, [artist]);
 
-  // Artist seçildiyse albümleri al
+  // Albüm verisini al
   useEffect(() => {
     const fetchAlbums = async () => {
       if (!artist) {
@@ -128,9 +127,9 @@ const HomePage = () => {
 
       try {
         const res = await axios.get(
-          "https://soundchartbackend-gmcqc3bgfscyaced.westeurope-01.azurewebsites.net/api/albums",
+          "https://soundchartbackend-gmcqc3bgfscyaced.westeurope-01.azurewebsites.net/api/albums/artistName",
           {
-            params: { artist },
+            params: { artistName: artist }, // backend query param ile bekliyorsa
           }
         );
         setFilteredAlbums(res.data);
@@ -236,10 +235,10 @@ const HomePage = () => {
         />
       </SectionWrapper>
 
-      {/* 🌍 HARİTA */}
+      {/*  HARİTA */}
       <SectionWrapper id="map" className={styles.mapSection}>
         <h2 className={styles.sectionHeading}>
-          {genre ? `${genre.toUpperCase()} Listening Rates` : "Listening Rates"}
+          {genre ? `${genre.toUpperCase()} Listening Rates` : "Sale Rates"}
         </h2>
         <WorldMap
           data={mapData}
@@ -305,7 +304,6 @@ const HomePage = () => {
       {/* 📊 PREDICTION PLACEHOLDER */}
       <SectionWrapper id="prediction" className={styles.chartSection}>
         <h3>Genre Popularity by Country (Chart Coming Soon)</h3>
-        <div className={styles.placeholder}></div>
       </SectionWrapper>
     </div>
   );

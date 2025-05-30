@@ -1,5 +1,6 @@
 .chartSection {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
   gap: 40px;
@@ -8,7 +9,7 @@
 
 .leftCloud,
 .rightBubble {
-  flex: 1;
+  flex: 1 1 500px; /* ✅ 500px'den küçülünce alta geçer */
   max-width: 50%;
   display: flex;
   flex-direction: column;

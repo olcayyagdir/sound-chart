@@ -5,19 +5,32 @@
   gap: 40px;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px); /* hafif yukarıdan gelsin */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .employeeDetailPanel {
   max-width: 320px;
-  background: #f9fafb;
+  background-color: #000;
+  color: white;
   padding: 16px;
   border: 1px solid #ddd;
   border-radius: 8px;
   font-family: sans-serif;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
+  animation: fadeIn 0.5s ease-out;
 }
 
 .employeeDetailPanel h3 {
   margin-top: 0;
   font-size: 18px;
+  color: #39ff14;
 }
 
 .employeeDetailPanel p {

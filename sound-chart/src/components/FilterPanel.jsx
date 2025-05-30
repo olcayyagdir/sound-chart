@@ -25,9 +25,9 @@ const FilterPanel = ({
   album,
   setAlbum,
   filteredAlbums,
-  setFilteredAlbums,
-  showAlbumSuggestions,
-  setShowAlbumSuggestions,
+  // setFilteredAlbums,
+  // showAlbumSuggestions,
+  // setShowAlbumSuggestions,
 
   durationLimits,
   revenueLimits,
@@ -172,7 +172,7 @@ const FilterPanel = ({
           </div>
         </div>
 
-        {/* Artist (autocomplete) */}
+        {/* 🎤 Artist (autocomplete) */}
         <div className={`${styles.filterItem} ${styles.autocompleteWrapper}`}>
           <label className={styles.filterLabel}>Artist</label>
           <input
@@ -193,23 +193,23 @@ const FilterPanel = ({
           />
           {showArtistSuggestions && artistSuggestions.length > 0 && artist && (
             <ul className={styles.suggestionList}>
-              {artistSuggestions.map((artist, index) => (
+              {artistSuggestions.map((suggestion, index) => (
                 <li
                   key={index}
                   className={styles.suggestionItem}
                   onMouseDown={() => {
-                    setArtist(artist.name);
+                    setArtist(suggestion.name); // burada artistName doğru alan olmalı
                     setShowArtistSuggestions(false);
                   }}
                 >
-                  {artist.name}
+                  {suggestion.name}
                 </li>
               ))}
             </ul>
           )}
         </div>
 
-        {/* Album (autocomplete) */}
+        {/* Album (autocomplete)
         <div className={`${styles.filterItem} ${styles.autocompleteWrapper}`}>
           <label className={styles.filterLabel}>Album</label>
           <input
@@ -252,7 +252,7 @@ const FilterPanel = ({
                 ))}
             </ul>
           )}
-        </div>
+        </div> */}
 
         {/* Album Select (artist seçildiyse) */}
         {artist && filteredAlbums.length > 0 && (
@@ -267,8 +267,8 @@ const FilterPanel = ({
             >
               <option value="">-- Select Album --</option>
               {filteredAlbums.map((a, index) => (
-                <option key={index} value={a.title}>
-                  {a.title}
+                <option key={index} value={a.album}>
+                  {a.album}
                 </option>
               ))}
             </select>

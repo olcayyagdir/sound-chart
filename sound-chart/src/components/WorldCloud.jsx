@@ -27,9 +27,11 @@ const WordCloud = () => {
 
       const svg = d3
         .select(svgRef.current)
-        .attr("width", width)
-        .attr("height", height)
-        .style("background", "#fff"); // .style("border", ...) SİLİNDİ
+        .attr("viewBox", `0 0 ${width} ${height}`) // Responsive ölçek
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .style("width", "100%")
+        .style("height", "auto")
+        .style("background", "#0f0f0f");
 
       svg.selectAll("*").remove();
 
@@ -57,7 +59,7 @@ const WordCloud = () => {
           .data(words)
           .join("text")
           .style("font-size", (d) => `${d.size}px`)
-          .style("fill", "#333")
+          .style("fill", "#006400")
           .style("font-family", "Impact")
           .attr("text-anchor", "middle")
           .attr(
@@ -72,9 +74,17 @@ const WordCloud = () => {
   }, []);
 
   return (
-    <div style={{ textAlign: "center" }}>
+    <div style={{ textAlign: "center", width: "100%" }}>
       <svg ref={svgRef}></svg>
-      <p style={{ marginTop: "16px", fontSize: "20px", color: "#666" }}>
+      <p
+        style={{
+          marginTop: "16px",
+          fontSize: "18px",
+          color: "#ccc",
+          maxWidth: "800px",
+          margin: "16px auto",
+        }}
+      >
         This chart is set according to the best-selling artists. The
         best-selling artist is the one who is most visible. Let's take a look at
         the best-selling artists and see if you can find the artist you like,

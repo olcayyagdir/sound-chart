@@ -6,6 +6,7 @@ import styles from "./PieChart.module.css";
 const EmployeePieChart = () => {
   const svgRef = useRef();
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const detailRef = useRef(); // ✅ detay kartı için yeni referans
 
   useEffect(() => {
     const fetchAndDraw = async () => {
@@ -23,10 +24,21 @@ const EmployeePieChart = () => {
       const width = 600;
       const height = 400;
 
+      const greenScale = [
+        "#006400",
+        "#228B22",
+        "#32CD32",
+        "#3CB371",
+        "#66CDAA",
+        "#7CFC00",
+        "#ADFF2F",
+        "#C0FF70",
+      ];
+
       const color = d3
         .scaleOrdinal()
         .domain(data.map((d) => d.fullName))
-        .range(d3.schemeTableau10);
+        .range(greenScale);
 
       const pie = d3
         .pie()
@@ -48,10 +60,9 @@ const EmployeePieChart = () => {
         .attr("viewBox", [-width / 2, -height / 2, width, height]);
 
       // Draw pie slices
-      // Draw pie slices
       svg
         .append("g")
-        .attr("stroke", "#fff")
+        .attr("stroke", "#000")
         .selectAll("path")
         .data(arcs)
         .join("path")
@@ -61,21 +72,16 @@ const EmployeePieChart = () => {
         .on("click", async (event, d) => {
           try {
             const id = d.data.employeeId;
-            console.log("Tıklanan dilimin ID'si:", id); // ✅ ID kontrol
-
             const detailRes = await axios.get(
               `https://soundchartbackend-gmcqc3bgfscyaced.westeurope-01.azurewebsites.net/api/employees/detail/${id}`
             );
-
-            console.log("Gelen detay verisi:", detailRes.data); // ✅ Veri kontrol
-
             setSelectedEmployee(detailRes.data[0]);
           } catch (err) {
             console.error("Detay verisi alınamadı:", err);
           }
         });
 
-      // Add labels (full name + totalSold) inside each slice
+      // Add labels
       svg
         .append("g")
         .attr("text-anchor", "middle")
@@ -105,12 +111,33 @@ const EmployeePieChart = () => {
     fetchAndDraw();
   }, []);
 
+  useEffect(() => {
+    const handleClick = (event) => {
+      const isInsideSvg = svgRef.current?.contains(event.target);
+      const isInsideDetail = detailRef.current?.contains(event.target);
+
+      // 🔁 hem svg'ye hem karta tıklamada kartı kapat
+      if (!isInsideSvg || isInsideDetail) {
+        setSelectedEmployee(null);
+      }
+    };
+
+    // D3 olaylarıyla çakışmaması için kısa gecikme
+    setTimeout(() => {
+      document.addEventListener("click", handleClick);
+    }, 0);
+
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  }, []);
+
   return (
     <div className={styles.employeeChartWrapper}>
       <svg ref={svgRef}></svg>
 
       {selectedEmployee && (
-        <div className={styles.employeeDetailPanel}>
+        <div className={styles.employeeDetailPanel} ref={detailRef}>
           <h3>
             {selectedEmployee.firstName} {selectedEmployee.lastName}
           </h3>

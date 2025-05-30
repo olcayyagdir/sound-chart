@@ -12,12 +12,18 @@ const WorldMap = ({ data }) => {
   });
 
   useEffect(() => {
-    const width = 960;
-    const height = 500;
-
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
     console.log("Harita veri kontrolü:", data);
+
+    const width = 960;
+    const height = 500;
+
+    svg
+      .attr("viewBox", `0 0 ${width} ${height}`) // ✅ responsive
+      .attr("preserveAspectRatio", "xMidYMid meet") // ✅ orantılı küçülme
+      .style("width", "100%") // ✅ container'a uyar
+      .style("height", "auto");
 
     const projection = d3
       .geoMercator()
@@ -26,13 +32,12 @@ const WorldMap = ({ data }) => {
 
     const path = d3.geoPath().projection(projection);
 
-    // Harcama miktarları için color scale
     const spentValues = data.map((d) => d.totalSpent);
     const colorScale = d3
       .scaleLinear()
       .domain([Math.min(...spentValues), Math.max(...spentValues)])
-      .range(["#d9f99d", "#166534"]); // açık yeşil → koyu yeşil
-    // GeoJSON verisini yükle
+      .range(["#d9f99d", "#166534"]);
+
     d3.json(
       "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json"
     ).then((worldData) => {
@@ -42,8 +47,6 @@ const WorldMap = ({ data }) => {
       ).features;
 
       svg
-        .attr("width", width)
-        .attr("height", height)
         .selectAll("path")
         .data(countries)
         .join("path")
@@ -85,12 +88,13 @@ const WorldMap = ({ data }) => {
     <div
       style={{
         position: "relative",
-        backgroundColor: "#111827", // çok koyu gri
+        backgroundColor: "#111827",
         borderRadius: "16px",
         padding: "20px",
         margin: "0 auto",
-        width: "fit-content",
-        boxShadow: "0 0 20px rgba(0,0,0,0.4)", // dış parlama efekti
+        width: "100%", // ✅ container'a oturur
+        maxWidth: "960px", // ✅ isteğe göre sınırlı genişlik
+        boxShadow: "0 0 20px rgba(0,0,0,0.4)",
       }}
     >
       <svg ref={svgRef}></svg>
@@ -100,7 +104,7 @@ const WorldMap = ({ data }) => {
             position: "absolute",
             left: tooltip.x,
             top: tooltip.y,
-            backgroundColor: "#1f1f1f", // dark background
+            backgroundColor: "#1f1f1f",
             color: "#e5e5e5",
             padding: "8px 12px",
             border: "1px solid #374151",
@@ -110,6 +114,7 @@ const WorldMap = ({ data }) => {
             fontSize: "14px",
             fontFamily: "Inter, sans-serif",
             boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
+            whiteSpace: "nowrap",
           }}
         >
           {tooltip.content}
