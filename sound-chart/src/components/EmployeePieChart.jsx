@@ -116,7 +116,7 @@ const EmployeePieChart = () => {
       const isInsideSvg = svgRef.current?.contains(event.target);
       const isInsideDetail = detailRef.current?.contains(event.target);
 
-      // 🔁 hem svg'ye hem karta tıklamada kartı kapat
+      //  hem svg'ye hem karta tıklamada kartı kapat
       if (!isInsideSvg || isInsideDetail) {
         setSelectedEmployee(null);
       }

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import cloud from "d3-cloud";
+import styles from "../components/ChartSection.module.css";
 import axios from "axios";
 
 const WordCloud = () => {
@@ -76,20 +77,12 @@ const WordCloud = () => {
   return (
     <div style={{ textAlign: "center", width: "100%" }}>
       <svg ref={svgRef}></svg>
-      <p
-        style={{
-          marginTop: "16px",
-          fontSize: "18px",
-          color: "#ccc",
-          maxWidth: "800px",
-          margin: "16px auto",
-        }}
-      >
+      <div className={styles.wordCloudInfoCard}>
         This chart is set according to the best-selling artists. The
         best-selling artist is the one who is most visible. Let's take a look at
         the best-selling artists and see if you can find the artist you like,
         and see how popular they are!
-      </p>
+      </div>
     </div>
   );
 };

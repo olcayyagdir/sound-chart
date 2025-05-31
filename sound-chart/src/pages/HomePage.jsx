@@ -8,6 +8,9 @@ import EmployeePieChart from "../components/EmployeePieChart";
 import WordCloud from "../components/WorldCloud";
 import BubbleChart from "../components/BubbleChart";
 import chartStyles from "../components/ChartSection.module.css";
+import ForecastScatterPlot from "../components/ForecastScatterPlot";
+import GenreForecastChart from "../components/GenreForecastChart";
+
 import axios from "axios";
 import SectionWrapper from "../components/SectionWrapper";
 
@@ -33,17 +36,24 @@ const HomePage = () => {
 
   const [mapData, setMapData] = useState([]);
 
+  const [forecastData, setForecastData] = useState([]);
+
   // Reset fonksiyonu
   const handleReset = () => {
     setGenre("");
     setMediaType("");
-    setDurationRange("");
-    setRevenueRange("");
     setArtist("");
     setAlbum("");
     setMapData([]);
     setArtistSuggestions([]);
     setFilteredAlbums([]);
+    if (durationLimits.min != null && durationLimits.max != null) {
+      setDurationRange([durationLimits.min, durationLimits.max]);
+    }
+
+    if (revenueLimits.min != null && revenueLimits.max != null) {
+      setRevenueRange([revenueLimits.min, revenueLimits.max]);
+    }
   };
 
   // Sayfa açıldığında genre ve mediaType opsiyonlarını al
@@ -107,7 +117,10 @@ const HomePage = () => {
           "https://soundchartbackend-gmcqc3bgfscyaced.westeurope-01.azurewebsites.net/api/artists",
           { params: { search: artist } }
         );
+
         console.log("API'den gelen sanatçılar:", res.data);
+        console.log("örnek sanatçı:", res.data[0]); // bunu geçici olarak ekle
+
         setArtistSuggestions(res.data);
       } catch (err) {
         console.error("Sanatçılar alınamadı:", err);
@@ -168,6 +181,29 @@ const HomePage = () => {
 
     fetchData();
   }, [genre, mediaType, durationRange, revenueRange, artist, album]);
+
+  //Forecast Scatterplot
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          "https://soundchartbackend-gmcqc3bgfscyaced.westeurope-01.azurewebsites.net/api/ForecastFiles/country"
+        );
+        console.log("API response:", res.data); // 🔍 BURAYA DİKKAT
+        const mapped = res.data.map((item) => ({
+          countryName: item.countryName,
+          last3MonthsAverage: parseFloat(item.last3MonthsAverage),
+          forecast3MonthsAverage: parseFloat(item.forecast3MonthsAverage),
+        }));
+        console.log("Mapped forecast data:", mapped); // 🔍 BURAYA DİKKAT
+        setForecastData(mapped);
+      } catch (error) {
+        console.error("Error fetching forecast data", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div>
@@ -242,34 +278,14 @@ const HomePage = () => {
         </h2>
         <WorldMap
           data={mapData}
-          selectedFilters={{
-            genre,
-            mediaType,
-            durationRange,
-            artist,
-            revenueRange,
-          }}
+          genre={genre}
+          mediaType={mediaType}
+          durationRange={durationRange}
+          revenueRange={revenueRange}
+          artist={artist}
+          album={album}
         />
       </SectionWrapper>
-
-      <button
-        onClick={() => {
-          const el = document.getElementById("chart");
-          if (el) el.scrollIntoView({ behavior: "smooth" });
-        }}
-        style={{
-          margin: "20px auto",
-          padding: "10px 20px",
-          backgroundColor: "#3b82f6",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          display: "block",
-        }}
-      >
-        Show Graphs
-      </button>
 
       <div className={styles.sectionDivider}></div>
       <SectionWrapper id="graph" className={styles.chartSection}>
@@ -288,22 +304,26 @@ const HomePage = () => {
       <div className={styles.sectionDivider}></div>
 
       <SectionWrapper className={chartStyles.chartSection}>
-        <div className={chartStyles.leftCloud}>
-          <h3 className={styles.sectionHeading}>WordCloud for Artists</h3>
-
-          <WordCloud />
-        </div>
-        <div className={chartStyles.rightBubble}>
-          <h3 className={styles.sectionHeading}>Playlist-Sale Relation</h3>
-
-          <BubbleChart />
-        </div>
+        <h3 className={styles.sectionHeading}>WordCloud for Artists</h3>
+        <WordCloud />
       </SectionWrapper>
+
+      <SectionWrapper className={chartStyles.chartBlock}>
+        <h3 className={styles.sectionHeading}>Playlist-Sale Relation</h3>
+        <BubbleChart />
+      </SectionWrapper>
+
       <div className={styles.sectionDivider}></div>
 
       {/* 📊 PREDICTION PLACEHOLDER */}
       <SectionWrapper id="prediction" className={styles.chartSection}>
-        <h3>Genre Popularity by Country (Chart Coming Soon)</h3>
+        <h3 className={styles.sectionHeading}>Forecast Spending Scatterplot</h3>
+        <ForecastScatterPlot data={forecastData} />
+      </SectionWrapper>
+
+      <SectionWrapper id="prediction" className={styles.chartSection}>
+        <h3 className={styles.sectionHeading}>Forecast Spending Comparison</h3>
+        <GenreForecastChart />
       </SectionWrapper>
     </div>
   );

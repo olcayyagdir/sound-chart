@@ -24,7 +24,7 @@ const GenreStackedChart = () => {
       const allGenres = Array.from(new Set(rawData.map((d) => d.genre)));
 
       const width = 1100;
-      const height = transformedData.length * 35 + 40;
+      const height = transformedData.length * 25 + 40;
       const margin = { top: 30, right: 20, bottom: 30, left: 160 };
 
       const x = d3
@@ -69,19 +69,38 @@ const GenreStackedChart = () => {
         .join("g")
         .attr("fill", (d) => color(d.key))
         .selectAll("rect")
-        .data((d) => d)
+        .data((d) =>
+          d.map((v) => ({
+            ...v,
+            genre: d.key, // genre burada her rect'e ekleniyor
+          }))
+        )
         .join("rect")
         .attr("x", (d) => x(d[0]))
         .attr("y", (d) => y(d.data.country))
         .attr("width", (d) => x(d[1]) - x(d[0]))
         .attr("height", y.bandwidth())
         .append("title")
-        .text((d) => `${d.data.country} – ${d[1] - d[0]}`);
+        .text((d) => {
+          const value = d[1] - d[0];
+          const formattedValue = new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits: 2,
+          }).format(value);
+
+          return `${d.genre} in ${d.data.country}: ${formattedValue}`;
+        });
 
       svg
         .append("g")
         .attr("transform", `translate(0,${margin.top})`)
-        .call(d3.axisTop(x).ticks(width / 100, "s"))
+        .call(
+          d3
+            .axisTop(x)
+            .ticks(10) // ➕ daha fazla aralık (örn: 10 tick)
+            .tickFormat(d3.format("$.2s")) // ➕ "$1.2k", "$2M" gibi okunabilir para biçimi
+        )
         .call((g) => g.selectAll(".domain").remove());
 
       svg
@@ -119,6 +138,10 @@ const GenreStackedChart = () => {
   return (
     <div style={{ width: "100%", overflowX: "auto" }}>
       <svg ref={svgRef}></svg>
+      <h3 style={{ textAlign: "center", color: "#ccc", marginBottom: "12px" }}>
+        Each bar shows how much each genre contributes to total revenue per
+        country.
+      </h3>
     </div>
   );
 };

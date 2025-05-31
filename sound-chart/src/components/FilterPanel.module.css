@@ -56,12 +56,12 @@
   top: 100%;
   left: 0;
   right: 0;
-  border: 1px solid #ccc;
-  background-color: #fff;
+  border: 1px solid #cccccc;
+  background-color: #1f1f1f;
   list-style: none;
   margin: 0;
   padding: 0;
-  z-index: 999;
+  z-index: 10;
   max-height: 150px;
   overflow-y: auto;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -71,10 +71,12 @@
 .suggestionItem {
   padding: 8px 10px;
   cursor: pointer;
+  color: #ccc;
 }
 
 .suggestionItem:hover {
-  background-color: #f3f4f6;
+  background-color: #222;
+  color: #22c55e;
 }
 .autocompleteWrapper {
   position: relative;
@@ -84,40 +86,23 @@
 .rangeWrapper {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .rangeSlider {
   width: 100%;
-  -webkit-appearance: none;
   appearance: none;
-  height: 6px;
-  background: #22c55e;
-  border-radius: 5px;
-  outline: none;
-  position: relative;
-  pointer-events: all;
+  height: 4px;
+  background-color: #ccc;
+  border-radius: 4px;
 }
 
 .rangeSlider::-webkit-slider-thumb {
-  -webkit-appearance: none;
   appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 12px;
+  height: 12px;
+  background-color: #22c55e;
   border-radius: 50%;
-  background: #fff;
-  border: 2px solid #22c55e;
-  cursor: pointer;
-  position: relative;
-  z-index: 2;
-}
-
-.rangeSlider::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #fff;
-  border: 2px solid #22c55e;
   cursor: pointer;
 }
 

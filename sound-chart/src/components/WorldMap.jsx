@@ -1,8 +1,18 @@
+// WorldMap.jsx (tam kod)
+
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import * as topojson from "topojson-client";
 
-const WorldMap = ({ data }) => {
+const WorldMap = ({
+  data,
+  genre,
+  mediaType,
+  durationRange,
+  revenueRange,
+  artist,
+  album,
+}) => {
   const svgRef = useRef();
   const [tooltip, setTooltip] = useState({
     visible: false,
@@ -11,25 +21,47 @@ const WorldMap = ({ data }) => {
     content: "",
   });
 
+  const buildTooltipContent = (countryData) => {
+    return `
+      <strong>${countryData.country}</strong><br/>
+      Total Revenue: $${countryData.totalSpent.toFixed(2)}<br/>
+      <br/>
+      <strong>Filters:</strong><br/>
+      ${genre ? `• Genre: ${genre}<br/>` : ""}
+      ${mediaType ? `• Media Type: ${mediaType}<br/>` : ""}
+      ${
+        durationRange[0] != null && durationRange[1] != null
+          ? `• Duration: ${durationRange[0]}-${durationRange[1]} sec<br/>`
+          : ""
+      }
+      ${
+        revenueRange[0] != null && revenueRange[1] != null
+          ? `• Revenue: $${revenueRange[0]}-$${revenueRange[1]}<br/>`
+          : ""
+      }
+      ${artist ? `• Artist: ${artist}<br/>` : ""}
+      ${album ? `• Album: ${album}<br/>` : ""}
+    `;
+  };
+
+  //burada eslint hatası gösteriyor ama dokunmak zorunda değiliz hatasız çalışıyor ekstra bir riski de yok
   useEffect(() => {
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
-    console.log("Harita veri kontrolü:", data);
 
     const width = 960;
     const height = 500;
 
     svg
-      .attr("viewBox", `0 0 ${width} ${height}`) // ✅ responsive
-      .attr("preserveAspectRatio", "xMidYMid meet") // ✅ orantılı küçülme
-      .style("width", "100%") // ✅ container'a uyar
+      .attr("viewBox", `0 0 ${width} ${height}`)
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .style("width", "100%")
       .style("height", "auto");
 
     const projection = d3
       .geoMercator()
       .scale(140)
       .translate([width / 2, height / 1.4]);
-
     const path = d3.geoPath().projection(projection);
 
     const spentValues = data.map((d) => d.totalSpent);
@@ -64,9 +96,7 @@ const WorldMap = ({ data }) => {
               visible: true,
               x: event.clientX - svgRect.left,
               y: event.clientY - svgRect.top - 40,
-              content: `${
-                countryData.country
-              } – $${countryData.totalSpent.toFixed(2)}`,
+              content: buildTooltipContent(countryData),
             });
           }
         })
@@ -82,18 +112,18 @@ const WorldMap = ({ data }) => {
           setTooltip((prev) => ({ ...prev, visible: false }));
         });
     });
-  }, [data]);
+  }, [data, genre, mediaType, durationRange, revenueRange, artist, album]);
 
   return (
     <div
       style={{
         position: "relative",
-        backgroundColor: "#111827",
+        backgroundColor: "#1a1a1a",
         borderRadius: "16px",
         padding: "20px",
         margin: "0 auto",
-        width: "100%", // ✅ container'a oturur
-        maxWidth: "960px", // ✅ isteğe göre sınırlı genişlik
+        width: "100%",
+        maxWidth: "960px",
         boxShadow: "0 0 20px rgba(0,0,0,0.4)",
       }}
     >
@@ -116,9 +146,8 @@ const WorldMap = ({ data }) => {
             boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
             whiteSpace: "nowrap",
           }}
-        >
-          {tooltip.content}
-        </div>
+          dangerouslySetInnerHTML={{ __html: tooltip.content }}
+        ></div>
       )}
     </div>
   );

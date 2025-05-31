@@ -80,7 +80,7 @@ const FilterPanel = ({
               type="range"
               min={durationLimits.min}
               max={durationLimits.max}
-              value={durationRange[0]}
+              value={durationRange[0] ?? durationLimits.min}
               onChange={(e) =>
                 setDurationRange([+e.target.value, durationRange[1]])
               }
@@ -90,7 +90,7 @@ const FilterPanel = ({
               type="range"
               min={durationLimits.min}
               max={durationLimits.max}
-              value={durationRange[1]}
+              value={durationRange[1] ?? durationLimits.max}
               onChange={(e) =>
                 setDurationRange([durationRange[0], +e.target.value])
               }
@@ -98,24 +98,42 @@ const FilterPanel = ({
             />
             <div className={styles.rangeInputs}>
               <input
-                type="number"
-                min={durationLimits.min}
-                max={durationRange[1]}
-                value={durationRange[0]}
-                onChange={(e) =>
-                  setDurationRange([+e.target.value, durationRange[1]])
-                }
+                type="text"
+                inputMode="numeric"
+                placeholder="min"
+                value={durationRange[0] != null ? durationRange[0] : ""}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === "") {
+                    setDurationRange([null, durationRange[1]]);
+                  } else if (/^\d+$/.test(val)) {
+                    const clamped = Math.min(
+                      Math.max(+val, durationLimits.min),
+                      durationRange[1] ?? durationLimits.max
+                    );
+                    setDurationRange([clamped, durationRange[1]]);
+                  }
+                }}
                 className={styles.rangeInput}
               />
               <span>–</span>
               <input
-                type="number"
-                min={durationRange[0]}
-                max={durationLimits.max}
-                value={durationRange[1]}
-                onChange={(e) =>
-                  setDurationRange([durationRange[0], +e.target.value])
-                }
+                type="text"
+                inputMode="numeric"
+                placeholder="max"
+                value={durationRange[1] != null ? durationRange[1] : ""}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === "") {
+                    setDurationRange([durationRange[0], null]);
+                  } else if (/^\d+$/.test(val)) {
+                    const clamped = Math.max(
+                      Math.min(+val, durationLimits.max),
+                      durationRange[0] ?? durationLimits.min
+                    );
+                    setDurationRange([durationRange[0], clamped]);
+                  }
+                }}
                 className={styles.rangeInput}
               />
             </div>
@@ -130,7 +148,7 @@ const FilterPanel = ({
               type="range"
               min={revenueLimits.min}
               max={revenueLimits.max}
-              value={revenueRange[0]}
+              value={revenueRange[0] ?? revenueLimits.min}
               onChange={(e) =>
                 setRevenueRange([+e.target.value, revenueRange[1]])
               }
@@ -140,7 +158,7 @@ const FilterPanel = ({
               type="range"
               min={revenueLimits.min}
               max={revenueLimits.max}
-              value={revenueRange[1]}
+              value={revenueRange[1] ?? revenueLimits.max}
               onChange={(e) =>
                 setRevenueRange([revenueRange[0], +e.target.value])
               }
@@ -148,24 +166,42 @@ const FilterPanel = ({
             />
             <div className={styles.rangeInputs}>
               <input
-                type="number"
-                min={revenueLimits.min}
-                max={revenueRange[1]}
-                value={revenueRange[0]}
-                onChange={(e) =>
-                  setRevenueRange([+e.target.value, revenueRange[1]])
-                }
+                type="text"
+                inputMode="numeric"
+                placeholder="min"
+                value={revenueRange[0] != null ? revenueRange[0] : ""}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === "") {
+                    setRevenueRange([null, revenueRange[1]]);
+                  } else if (/^\d+$/.test(val)) {
+                    const clamped = Math.min(
+                      Math.max(+val, revenueLimits.min),
+                      revenueRange[1] ?? revenueLimits.max
+                    );
+                    setRevenueRange([clamped, revenueRange[1]]);
+                  }
+                }}
                 className={styles.rangeInput}
               />
               <span>–</span>
               <input
-                type="number"
-                min={revenueRange[0]}
-                max={revenueLimits.max}
-                value={revenueRange[1]}
-                onChange={(e) =>
-                  setRevenueRange([revenueRange[0], +e.target.value])
-                }
+                type="text"
+                inputMode="numeric"
+                placeholder="max"
+                value={revenueRange[1] != null ? revenueRange[1] : ""}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === "") {
+                    setRevenueRange([revenueRange[0], null]);
+                  } else if (/^\d+$/.test(val)) {
+                    const clamped = Math.max(
+                      Math.min(+val, revenueLimits.max),
+                      revenueRange[0] ?? revenueLimits.min
+                    );
+                    setRevenueRange([revenueRange[0], clamped]);
+                  }
+                }}
                 className={styles.rangeInput}
               />
             </div>
@@ -186,25 +222,40 @@ const FilterPanel = ({
               if (artistSuggestions.length > 0) setShowArtistSuggestions(true);
             }}
             onBlur={() => {
-              setTimeout(() => setShowArtistSuggestions(false), 100);
+              setTimeout(() => setShowArtistSuggestions(false), 150);
             }}
             placeholder="Enter artist name"
             className={styles.input}
           />
+
           {showArtistSuggestions && artistSuggestions.length > 0 && artist && (
             <ul className={styles.suggestionList}>
-              {artistSuggestions.map((suggestion, index) => (
-                <li
-                  key={index}
-                  className={styles.suggestionItem}
-                  onMouseDown={() => {
-                    setArtist(suggestion.name); // burada artistName doğru alan olmalı
-                    setShowArtistSuggestions(false);
-                  }}
-                >
-                  {suggestion.name}
-                </li>
-              ))}
+              {artistSuggestions
+                .filter((s) =>
+                  s.name.toLowerCase().includes(artist.toLowerCase())
+                )
+                .sort((a, b) => {
+                  const input = artist.toLowerCase();
+                  const aStarts = a.name.toLowerCase().startsWith(input)
+                    ? 0
+                    : 1;
+                  const bStarts = b.name.toLowerCase().startsWith(input)
+                    ? 0
+                    : 1;
+                  return aStarts - bStarts; // önce başlayanlar öne gelsin
+                })
+                .map((suggestion, index) => (
+                  <li
+                    key={index}
+                    className={styles.suggestionItem}
+                    onMouseDown={() => {
+                      setArtist(suggestion.name);
+                      setShowArtistSuggestions(false);
+                    }}
+                  >
+                    {suggestion.name}
+                  </li>
+                ))}
             </ul>
           )}
         </div>

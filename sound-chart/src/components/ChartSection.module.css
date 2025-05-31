@@ -1,24 +1,93 @@
-.chartSection {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 40px;
-  padding: 40px;
-}
-
-.leftCloud,
-.rightBubble {
-  flex: 1 1 500px; /* ✅ 500px'den küçülünce alta geçer */
-  max-width: 50%;
+.wordCloudSection {
+  width: 100%;
+  background-color: #101010;
+  padding: 60px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 20px;
 }
 
-.wordCloudTitle {
-  font-size: 20px;
-  font-weight: bold;
+.wordCloudInfoCard {
+  background-color: #111;
+  border: 1.5px;
+  border-radius: 12px;
+  padding: 16px 20px;
+  width: 100%;
+  max-width: 800px;
+  box-sizing: border-box;
+  color: #cccccc;
+  font-size: 18px;
+  box-shadow: 0 0 6px rgba(0, 255, 136, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin: 16px auto 0;
   text-align: center;
-  margin-bottom: 16px;
+}
+
+.wordCloudInfoCard:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 0 14px rgba(0, 255, 136, 0.5), 0 0 24px rgba(0, 255, 136, 0.25);
+}
+
+.bubbleChartSection {
+  width: 100%;
+  background-color: #181818;
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.bubbleChartWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  justify-content: center; /* 👈 space-between yerine tekrar center */
+  align-items: center;
+  width: 100%;
+  padding: 32px 16px;
+}
+
+.bubbleSvgWrapper {
+  flex: 1 1 100%;
+  max-width: 600px;
+  width: 100%;
+}
+
+.bubbleInfoCard {
+  background-color: #111;
+  border: 1.5px;
+  border-radius: 12px;
+  padding: 16px 20px;
+  width: 100%;
+  max-width: 340px; /* ✅ sınırlı genişlik ama esnek */
+  box-sizing: border-box;
+  color: #cccccc;
+  font-size: 20px;
+  box-shadow: 0 0 6px rgba(0, 255, 136, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-top: 0;
+}
+
+.bubbleInfoCard:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 0 14px rgba(0, 255, 136, 0.5), 0 0 24px rgba(0, 255, 136, 0.25);
+}
+
+.bubbleInfoCard p {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .bubbleChartWrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .bubbleInfoCard {
+    max-width: 100%;
+    font-size: 15px;
+    padding: 14px 16px;
+  }
 }
