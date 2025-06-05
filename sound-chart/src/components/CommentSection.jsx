@@ -67,7 +67,7 @@ const CommentSection = ({ employeeId }) => {
       <form onSubmit={handleSubmit} className={styles.commentForm}>
         <textarea
           className={styles.commentInput}
-          placeholder="Write a comment..."
+          placeholder="Write a Comment"
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           required
