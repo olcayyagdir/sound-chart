@@ -23,25 +23,25 @@ const WorldMap = ({
 
   const buildTooltipContent = (countryData) => {
     return `
-      <strong>${countryData.country}</strong><br/>
-      Total Revenue: $${countryData.totalSpent.toFixed(2)}<br/>
-      <br/>
-      <strong>Filters:</strong><br/>
-      ${genre ? `• Genre: ${genre}<br/>` : ""}
-      ${mediaType ? `• Media Type: ${mediaType}<br/>` : ""}
-      ${
-        durationRange[0] != null && durationRange[1] != null
-          ? `• Duration: ${durationRange[0]}-${durationRange[1]} sec<br/>`
-          : ""
-      }
-      ${
-        revenueRange[0] != null && revenueRange[1] != null
-          ? `• Revenue: $${revenueRange[0]}-$${revenueRange[1]}<br/>`
-          : ""
-      }
-      ${artist ? `• Artist: ${artist}<br/>` : ""}
-      ${album ? `• Album: ${album}<br/>` : ""}
-    `;
+        <strong>${countryData.country}</strong><br/>
+        Total Revenue: $${countryData.totalSpent.toFixed(2)}<br/>
+        <br/>
+        <strong>Filters:</strong><br/>
+        ${genre ? `• Genre: ${genre}<br/>` : ""}
+        ${mediaType ? `• Media Type: ${mediaType}<br/>` : ""}
+        ${
+          durationRange[0] != null && durationRange[1] != null
+            ? `• Duration: ${durationRange[0]}-${durationRange[1]} sec<br/>`
+            : ""
+        }
+        ${
+          revenueRange[0] != null && revenueRange[1] != null
+            ? `• Revenue: $${revenueRange[0]}-$${revenueRange[1]}<br/>`
+            : ""
+        }
+        ${artist ? `• Artist: ${artist}<br/>` : ""}
+        ${album ? `• Album: ${album}<br/>` : ""}
+      `;
   };
 
   //burada eslint hatası gösteriyor ama dokunmak zorunda değiliz hatasız çalışıyor ekstra bir riski de yok

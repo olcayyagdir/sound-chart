@@ -65,7 +65,7 @@
   box-sizing: border-box;
   color: #cccccc;
   font-size: 20px;
-  box-shadow: 0 0 6px rgba(0, 255, 136, 0.25);
+  box-shadow: 0 0 6px rgba(0, 255, 136, 0.251);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   margin-top: 0;
 }
