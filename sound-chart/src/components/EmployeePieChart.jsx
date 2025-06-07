@@ -48,7 +48,6 @@ const EmployeePieChart = () => {
       .arc()
       .innerRadius(0)
       .outerRadius(Math.min(width, height) / 2 - 10);
-
     const arcs = pie(data);
 
     const svg = d3.select(svgRef.current);
@@ -69,11 +68,15 @@ const EmployeePieChart = () => {
       .style("cursor", "pointer")
       .on("click", async (event, d) => {
         try {
-          const id = d.data.employeeId;
+          const id = d.data.employeeId; // buradan ID geliyor
           const detailRes = await axios.get(
             `https://soundchartbackend-gmcqc3bgfscyaced.westeurope-01.azurewebsites.net/api/employees/detail/${id}`
           );
-          setSelectedEmployee(detailRes.data[0]);
+
+          const detail = detailRes.data[0];
+          detail.id = id; // ⬅️ ID'yi elle geri ekle (çünkü detail içinde yok!)
+          console.log("📌 Detay verisi:", detail);
+          setSelectedEmployee(detail);
         } catch (err) {
           console.error("Detay verisi alınamadı:", err);
         }
@@ -95,7 +98,6 @@ const EmployeePieChart = () => {
           .attr("y", "-0.4em")
           .attr("font-weight", "bold")
           .text(d.data.fullName);
-
         text
           .append("tspan")
           .attr("x", 0)
@@ -113,8 +115,6 @@ const EmployeePieChart = () => {
     const handleClick = (event) => {
       const isInsideSvg = svgRef.current?.contains(event.target);
       const isInsideDetail = detailRef.current?.contains(event.target);
-
-      //  Kartın kapanma koşulu düzeltildi
       if (!isInsideSvg && !isInsideDetail) {
         setSelectedEmployee(null);
       }
@@ -150,8 +150,8 @@ const EmployeePieChart = () => {
           </p>
           <p>{selectedEmployee.description}</p>
 
-          {/* ⬇️ Yorum alanı */}
-          <CommentSection employeeId={selectedEmployee.employeeId} />
+          {/* 🔧 ID'yi artık kendimiz eklediğimiz için burada güvenle kullanabiliriz */}
+          <CommentSection employeeId={selectedEmployee.id} />
         </div>
       )}
     </div>
