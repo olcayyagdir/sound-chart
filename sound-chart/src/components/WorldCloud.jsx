@@ -62,6 +62,10 @@ const WordCloud = () => {
           .style("font-size", (d) => `${d.size}px`)
           .style("fill", "#006400")
           .style("font-family", "Impact")
+          .style(
+            "text-shadow",
+            "0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 15px #00ff00"
+          )
           .attr("text-anchor", "middle")
           .attr(
             "transform",

@@ -150,8 +150,10 @@ const EmployeePieChart = () => {
           </p>
           <p>{selectedEmployee.description}</p>
 
-          {/* 🔧 ID'yi artık kendimiz eklediğimiz için burada güvenle kullanabiliriz */}
-          <CommentSection employeeId={selectedEmployee.id} />
+          {/* ✅ Yorum bileşeni */}
+          {selectedEmployee.id && (
+            <CommentSection employeeId={selectedEmployee.id} />
+          )}
         </div>
       )}
     </div>

@@ -30,14 +30,12 @@ const CommentSection = ({ employeeId }) => {
     e.preventDefault();
 
     const commentToSend = {
-      employeeId: employeeId,
+      id: employeeId, // backend bunu istiyor olabilir
       text: newComment,
     };
 
-    console.log("🎯 Gönderilen veri:", commentToSend);
-
     try {
-      const res = await axios.post(
+      await axios.post(
         `https://soundchartbackend-gmcqc3bgfscyaced.westeurope-01.azurewebsites.net/api/employees/${employeeId}/comments`,
         commentToSend,
         {
@@ -47,8 +45,13 @@ const CommentSection = ({ employeeId }) => {
         }
       );
 
-      console.log("✅ Sunucudan gelen yanıt:", res.data);
-      setComments((prev) => [...prev, res.data]);
+      // ✅ Backend string döndürüyor, biz sahte yorum objesi oluşturuyoruz
+      const fakeComment = {
+        id: `temp-${Date.now()}`, // geçici ID
+        text: newComment,
+      };
+
+      setComments((prev) => [...prev, fakeComment]);
       setNewComment("");
     } catch (err) {
       console.error("❌ Yorum gönderilemedi:", err);
@@ -67,7 +70,7 @@ const CommentSection = ({ employeeId }) => {
       ) : (
         <ul className={styles.commentList}>
           {comments.map((c, i) => (
-            <li key={c.id || i}>{c.text}</li>
+            <li key={`${c.id}-${i}`}>{c.text}</li>
           ))}
         </ul>
       )}
